@@ -11,13 +11,18 @@ using System.Text;
 namespace HelloWorld
 {
 
+    public struct item
+    {
+        public int cost;
+        public string name;
+    }
+
     class Game
     {
-        public Player player;
-        public Shop shop;
+        private Player _player;
+        private Shop _shop;
         public bool _gameOver = false;
-        public bool buying = true;
-        public bool selling = false;
+       
 
         public Player player1;
         private Shop WinkingWarrior;
@@ -28,12 +33,13 @@ namespace HelloWorld
         private item arrow;
         private item shield;
         private item healingGem;
+        private item[] shopInventory;
         private string[] itemnames = { "Arrows", "Shield", "Healing Gem" };
 
 
         public void InitialItems()
         {
-            player.GetInventory();
+            _player.GetInventory();
             arrow.name = "Arrow";
             shield.name = "Shield";
             healingGem.name = "Healing Sapphire";
@@ -47,26 +53,49 @@ namespace HelloWorld
         public void OpenShopMenu()
         {
             Console.WriteLine("What would you like to buy");
-            for (int i = 0; i < 3; i++)
+            PrintInventory(shopInventory);
+            char input = Console.ReadKey().KeyChar;
+            int playerIndex = -1;
+            switch (input)
             {
-                Console.WriteLine(i + ". " + itemnames[i]);
+                case '1':
+                    {
+                        playerIndex = 0;
+                        break;
+                    }
+
+                case '2':
+                    {
+                        playerIndex = 1;
+                        break;
+                    }
+
+                case '3':
+                    {
+                        playerIndex = 2;
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
             }
-            char input;
-            input = Console.ReadKey().KeyChar;
-            if (input == '1')
+            if (_player.GetCoins() < shopInventory[playerIndex].cost)
             {
-                
-               
+                Console.WriteLine("Can not afford this item");
+                return;
             }
+          
+
         }
         //Prints inventory on screen
-        public void PrintInventory(item[] _Inventory)
+        public void PrintInventory(item[] inventory)
         {
 
-            for (int i = 0; i < _Inventory.Length; i++)
+            for (int i = 0; i < inventory.Length; i++)
             {
-                
-                Console.WriteLine(_Inventory[i]);
+
+                Console.WriteLine((i + 1) + inventory[i].name + inventory[i].cost) ;
                 
             }
           
@@ -90,9 +119,11 @@ namespace HelloWorld
         //Performed once when the game begins
         public void Start()
         {
-
-            PrintInventory(player._Inventory);
-
+            _player = new Player();
+            PrintInventory(_player._Inventory);
+            InitialItems();
+            shopInventory = new item[] { arrow, shield, healingGem };
+            _shop = new Shop(shopInventory);
 
         }
 

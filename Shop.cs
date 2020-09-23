@@ -7,36 +7,44 @@ using System.Text;
 namespace HelloWorld
 {
 
-    public struct item
-    {
-        public int cost;
-        public string name;
-    }
+   
 
    public class Shop
     {
         public string[] itemname = { "Arrows", "Shield", "Healing Gem" };
+        private int _coins;
         private int ShopCoins;
-        private item[] ShopInventory;
+        private item[] _inventory;
         private item Shield;
         private item healingGem;
         private item arrows;
 
       
-        Shop()
+       public Shop()
         {
-            int coins = 0;
-            ShopInventory = new item[3];
+            int _coins = 100;
+            _inventory = new item[3];
           
         }
-        Shop(item[] items)
+       public Shop(item[] items)
         {
-            for (int i = 0; i < 3; i++)
-            {
-                ShopInventory[i] = items[i];
-            }
-
+            _coins = 100;
+            //Sets inventory to be equal to amount of items
+            _inventory = items;
             
         }
+
+        public bool Sell(Player player, int ItemIndex, int playerIndex)
+        {
+            item itemTobuy = _inventory[ItemIndex];
+            //Checks if the item bought correctly
+           if(player.Buy(itemTobuy, playerIndex))
+           {
+                _coins += itemTobuy.cost;
+                return true;
+           }
+            return false;
+        }
+
     }
 }
